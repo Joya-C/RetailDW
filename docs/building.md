@@ -63,11 +63,14 @@
 
 ## 逻辑模型图
 以下是本项目数据仓库设计的逻辑模型图，它展示了不同数据实体之间的关系，包括事实表和各个维度表的链接：
-
+![逻辑模型图](/src/model/逻辑模型图.png)
 
 </details>
 
-
+<details>
+  <summary><strong>基于Hive的物理结构设计</strong></summary>
+  
+</details>
 
 
 
