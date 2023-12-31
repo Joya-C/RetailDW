@@ -90,7 +90,116 @@
 
 <details>
   <summary><strong>基于Hive的物理结构设计</strong></summary>
-  
+
+#### 分区策略
+- 鉴于查询主要关注月度销售数据，事实表将按月进行分区。
+
+#### 分桶策略
+- 考虑到查询经常涉及对产品的聚合分析，且产品数量较多，将对产品ID进行分桶。
+
+#### 存储格式
+- 选择ORC列式存储格式，它提供了高效的压缩和性能，支持快速的数据检索和分析。
+
+#### Hive表结构定义
+
+##### 店铺维度表（`store_dim`）
+```sql
+CREATE TABLE IF NOT EXISTS retail.store_dim(
+    store_id CHAR(4),
+    location VARCHAR(20) NOT NULL,
+    province VARCHAR(20) NOT NULL,
+    size VARCHAR(6) CHECK (size IN ('Large', 'Medium', 'Small')),
+    type VARCHAR(8) CHECK (type IN ('Urban', 'Suburban', 'Rural')),
+    operating_hours CHAR(11),
+    PRIMARY KEY (store_id) DISABLE NOVALIDATE
+)
+STORED AS ORC;
+```
+
+##### 客户维度表（`customer_dim`）
+```sql
+CREATE TABLE IF NOT EXISTS retail.customer_dim(
+    customer_id CHAR(6),
+    city VARCHAR(20) NOT NULL,
+    province VARCHAR(20) NOT NULL,
+    gender VARCHAR(6) CHECK (gender IN ('male', 'female')),
+    registration DATE,
+    PRIMARY KEY (customer_id) DISABLE NOVALIDATE
+)
+STORED AS ORC;
+```
+
+##### 供应商维度表（`supplier_dim`）
+```sql
+CREATE TABLE IF NOT EXISTS retail.supplier_dim(
+    supplier_id VARCHAR(6),
+    name STRING,
+    contact_info STRING,
+    product_range STRING,
+    performance_metrics VARCHAR(20),
+    PRIMARY KEY (supplier_id) DISABLE NOVALIDATE
+)
+STORED AS ORC;
+```
+
+##### 产品维度表（`product_dim`）
+```sql
+CREATE TABLE IF NOT EXISTS retail.product_dim(
+    product_id CHAR(6),
+    name STRING NOT NULL,
+    category VARCHAR(20) NOT NULL,
+    subcategory VARCHAR(20) NOT NULL,
+    supplier_id VARCHAR(6),
+    product_specifications STRING,
+    ratings FLOAT,
+    reviews STRING,
+    PRIMARY KEY (product_id) DISABLE NOVALIDATE,
+    FOREIGN KEY (supplier_id) REFERENCES supplier_dim(supplier_id) DISABLE NOVALIDATE
+)
+STORED AS ORC;
+```
+
+##### 时间维度表（`date_dim`）
+```sql
+CREATE TABLE IF NOT EXISTS retail.date_dim(
+    date_key INT,
+    full_date DATE,
+    dayofmonth SMALLINT,
+    dayofweek SMALLINT,
+    month SMALLINT,
+    year SMALLINT,
+    quarter SMALLINT,
+    PRIMARY KEY (date_key) DISABLE NOVALIDATE
+)
+STORED AS ORC;
+```
+
+##### 销售事实表（`sales_fact`）
+```sql
+CREATE TABLE IF NOT EXISTS retail.sales_fact(
+    transaction_id CHAR(7),
+    store_id CHAR(4),
+    product_id CHAR(6),
+    customer_id CHAR(6),
+    date_key INT,
+    payment_method VARCHAR(15) CHECK (payment_method IN ('Debit Card', 'Cash', 'Gift Card', 'Credit Card', 'WeChat Pay', 'Alipay')),
+    quantity SMALLINT,
+    cost FLOAT,
+    unit_price FLOAT,
+    total_amount FLOAT,
+    PRIMARY KEY (transaction_id) DISABLE NOVALIDATE,
+    FOREIGN KEY (store_id) REFERENCES store_dim(store_id) DISABLE NOVALIDATE,
+    FOREIGN KEY (product_id) REFERENCES product_dim(product_id) DISABLE NOVALIDATE,
+    FOREIGN KEY (customer_id) REFERENCES customer_dim(customer_id) DISABLE NOVALIDATE,
+    FOREIGN KEY (date_key) REFERENCES date_dim(date_key) DISABLE NOVALIDATE
+)
+PARTITIONED BY (month INT)
+CLUSTERED BY (product_id) INTO 4 BUCKETS
+STORED AS ORC;
+```
+
+
+
 </details>
 
 
