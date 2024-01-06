@@ -188,8 +188,7 @@ CREATE TABLE IF NOT EXISTS retail.sales_fact(
     FOREIGN KEY (customer_id) REFERENCES customer_dim(customer_id) DISABLE NOVALIDATE,
     FOREIGN KEY (date_key) REFERENCES date_dim(date_key) DISABLE NOVALIDATE
 )
-PARTITIONED BY (month INT)
-CLUSTERED BY (product_id) INTO 4 BUCKETS
+PARTITIONED BY (year SMALLINT,month SMALLINT)
 STORED AS ORC;
 ```
 
