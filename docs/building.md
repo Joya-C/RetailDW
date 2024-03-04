@@ -89,13 +89,13 @@
 <details>
   <summary><strong>基于Hive的物理结构设计</strong></summary>
 
-#### 分区策略
+### 分区策略
 - 鉴于查询主要关注月度销售数据，事实表将按月进行分区。
 
-#### 存储格式
+### 存储格式
 - 选择ORC列式存储格式，它提供了高效的压缩和性能，支持快速的数据检索和分析。
 
-#### Hive表结构定义
+### Hive表结构定义
 
 ##### 店铺维度表（`store_dim`）
 ```sql
@@ -192,6 +192,41 @@ PARTITIONED BY (year SMALLINT,month SMALLINT)
 STORED AS ORC;
 ```
 
+### 物化视图定义
+通过定义物化视图可以预计算并存储查询结果，使得在后续的查询中，优化器能够利用其定义语义自动使用物化视图重写传入查询，从而加快查询执行。
+基于业务需求考虑建立以下物化视图：
+
+##### 月度销售物化视图
+```sql
+CREATE MATERIALIZED VIEW IF NOT EXISTS retail.monthly_sales_summary
+AS
+  SELECT
+        year,
+        month,
+        sum(total_amount) as total_sales,
+        avg(total_amount) as avg_sales,
+        sum(quantity) as total_quantity
+  FROM retail.sales_fact
+  WHERE year = 2023 AND month IN (3, 4, 5)
+  GROUP BY year, month;
+```
+
+##### 产品销售物化视图
+```sql
+CREATE MATERIALIZED VIEW IF NOT EXISTS retail.product_sales_summary
+AS
+  SELECT
+        sf.product_id,
+        pd.name,
+        sum(sf.quantity) as total_quantity,
+        sum(sf.total_amount) as total_sales
+  FROM
+        sales_fact sf
+        inner join product_dim pd
+        ON sf.product_id = pd.product_id
+  WHERE year = 2023 AND month BETWEEN 3 AND 5
+  GROUP BY sf.product_id, pd.name;
+```
 
 
 </details>
