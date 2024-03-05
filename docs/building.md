@@ -108,7 +108,8 @@ CREATE TABLE IF NOT EXISTS retail.store_dim(
     operating_hours CHAR(11),
     PRIMARY KEY (store_id) DISABLE NOVALIDATE
 )
-STORED AS ORC;
+STORED AS ORC
+TBLPROPERTIES ('transactional'='true');
 ```
 
 ##### 客户维度表（`customer_dim`）
@@ -121,7 +122,8 @@ CREATE TABLE IF NOT EXISTS retail.customer_dim(
     registration DATE,
     PRIMARY KEY (customer_id) DISABLE NOVALIDATE
 )
-STORED AS ORC;
+STORED AS ORC
+TBLPROPERTIES ('transactional'='true');
 ```
 
 ##### 供应商维度表（`supplier_dim`）
@@ -134,7 +136,8 @@ CREATE TABLE IF NOT EXISTS retail.supplier_dim(
     performance_metrics VARCHAR(20),
     PRIMARY KEY (supplier_id) DISABLE NOVALIDATE
 )
-STORED AS ORC;
+STORED AS ORC
+TBLPROPERTIES ('transactional'='true');
 ```
 
 ##### 产品维度表（`product_dim`）
@@ -151,7 +154,8 @@ CREATE TABLE IF NOT EXISTS retail.product_dim(
     PRIMARY KEY (product_id) DISABLE NOVALIDATE,
     FOREIGN KEY (supplier_id) REFERENCES supplier_dim(supplier_id) DISABLE NOVALIDATE
 )
-STORED AS ORC;
+STORED AS ORC
+TBLPROPERTIES ('transactional'='true');
 ```
 
 ##### 时间维度表（`date_dim`）
@@ -166,7 +170,8 @@ CREATE TABLE IF NOT EXISTS retail.date_dim(
     quarter SMALLINT,
     PRIMARY KEY (date_key) DISABLE NOVALIDATE
 )
-STORED AS ORC;
+STORED AS ORC
+TBLPROPERTIES ('transactional'='true');
 ```
 
 ##### 销售事实表（`sales_fact`）
@@ -189,7 +194,8 @@ CREATE TABLE IF NOT EXISTS retail.sales_fact(
     FOREIGN KEY (date_key) REFERENCES date_dim(date_key) DISABLE NOVALIDATE
 )
 PARTITIONED BY (year SMALLINT,month SMALLINT)
-STORED AS ORC;
+STORED AS ORC
+TBLPROPERTIES ('transactional'='true');
 ```
 
 ### 物化视图定义
