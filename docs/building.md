@@ -213,7 +213,7 @@ AS
         avg(total_amount) as avg_sales,
         sum(quantity) as total_quantity
   FROM sales_fact
-  WHERE year = 2023 AND month IN (3, 4, 5)
+  WHERE year = 2023 AND month in (3, 4, 5)
   GROUP BY year, month;
 ```
 
@@ -230,7 +230,7 @@ AS
         sales_fact sf
         inner join product_dim pd
         on sf.product_id = pd.product_id
-  WHERE year = 2023 AND month BETWEEN 3 AND 5
+  WHERE year = 2023 AND month in (3,4,5)
   GROUP BY sf.product_id, pd.name;
 ```
 
@@ -243,7 +243,7 @@ AS
         sum(total_amount) as total_sales,
         sum(quantity) as total_quantity
   FROM sales_fact
-  WHERE year = 2023 AND month BETWEEN 3 AND 5
+  WHERE year = 2023 AND month in (3,4,5)
   GROUP BY store_id;
 ```
 
@@ -253,15 +253,15 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS retail.regional_sales_comparison
 AS
   SELECT
         sd.province,
-        sd.city,
+        sd.location,
         sum(sf.total_amount) as total_sales,
         sum(sf.quantity) as total_quantity
   FROM
         sales_fact sf
         inner join store_dim sd
         on sf.store_id = sd.store_id
-  WHERE year = 2023 AND month BETWEEN 3 AND 5
-  GROUP BY sd.province, sd.city;
+  WHERE year = 2023 AND month in (3,4,5)
+  GROUP BY sd.province, sd.location;
 ```
 ##### 店铺利润分析
 ```sql
@@ -303,7 +303,7 @@ AS
         sales_fact sf
         inner join product_dim pd
         on sf.product_id = pd.product_id
-  WHERE year = 2023 AND month BETWEEN 3 AND 5
+  WHERE year = 2023 AND month in (3,4,5)
   GROUP BY pd.category;
 ```
 ##### 供应商绩效
@@ -318,7 +318,7 @@ AS
         sales_fact sf
         inner join product_dim pd
         on sf.product_id = pd.product_id
-  WHERE year = 2023 AND month BETWEEN 3 AND 5
+  WHERE year = 2023 AND month in (3,4,5)
   GROUP BY pd.supplier_id;
 ```
 
