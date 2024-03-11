@@ -93,7 +93,7 @@
 - 鉴于查询主要关注月度销售数据，事实表将按月进行分区。
 
 ### 分桶策略
-- 考虑到销售事实表是查询中使用最频繁的表，并且经常与产品维度表进行连接，
+- 考虑到销售事实表是查询中使用最频繁的表，并且经常与产品维度表进行连接，所以选择product_id作为分桶键。
 
 ### 存储格式
 - 选择ORC列式存储格式，它提供了高效的压缩和性能，支持快速的数据检索和分析。
@@ -161,6 +161,7 @@ CREATE TABLE IF NOT EXISTS retail.product_dim(
     PRIMARY KEY (product_id) DISABLE NOVALIDATE,
     FOREIGN KEY (supplier_id) REFERENCES supplier_dim(supplier_id) DISABLE NOVALIDATE
 )
+CLUSTERED BY (product_id) INTO 3 BUCKETS 
 STORED AS ORC
 TBLPROPERTIES ('transactional'='true');
 ```
@@ -201,6 +202,7 @@ CREATE TABLE IF NOT EXISTS retail.sales_fact(
     FOREIGN KEY (date_key) REFERENCES date_dim(date_key) DISABLE NOVALIDATE
 )
 PARTITIONED BY (year SMALLINT,month SMALLINT)
+CLUSTERED BY (product_id) INTO 6 BUCKETS 
 STORED AS ORC
 TBLPROPERTIES ('transactional'='true');
 ```
