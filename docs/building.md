@@ -518,7 +518,7 @@ order by year, month, total_sales desc
 limit 10;
 ```
 #### 执行计划
-![](/src/TestPng/monthly_sales_exec_plan)
+![](/src/TestPng/monthly_sales_exec_plan.png)
 
 
 </details>
