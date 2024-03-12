@@ -364,7 +364,7 @@ AS
 - [APACHE HIVE PERFORMANCE TUNING](https://docs.cloudera.com/cdw-runtime/cloud/hive-performance-tuning/topics/hive-query-results-cache.html).
 - [	Hive 调优总结    ](https://developer.aliyun.com/article/59635).
 
- 
+ ```XML
         <property>
                 <name>hive.execution.engine</name>
                 <value>tez</value>
@@ -493,6 +493,7 @@ AS
                 <value>true</value>
         </property>
 	</configuration>
+```
 
 </details>
 
