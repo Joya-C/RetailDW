@@ -59,7 +59,7 @@
 在本项目中，数据仓库的设计采用了维度模型，这一策略遵循了《数据仓库工具箱》中的推荐做法。维度模型是理解业务过程、促进数据分析和支持决策制定的强有力工具。以下是建模过程的核心步骤概览：
 
 ### 数据集
-- **销售数据：** 事务ID、日期和时间、商店ID、产品ID、数量、单价、总金额、付款方式、客户ID
+- **销售数据：** 事务ID、日期和时间、商店ID、产品ID、数量、单价、总金额、付款方式、客户ID。
 - **产品数据：** 产品ID、名称、类别、子类别、供应商ID、成本、产品规格、评级和评论。
 - **客户数据:** 客户ID、姓名、城市、省、年龄、性别、联系方式、注册日期。
 - **供应商数据:** 供应商ID、名称、联系信息、产品范围、绩效指标。
@@ -357,10 +357,11 @@ AS
 
 <details>
 <summary><strong>Hive相关属性调优</strong></summary>
+### 参考资源
 以下是在优化过程中参考的一些重要资源：
-- [Optimizing Hive on Tez Performance](https://blog.cloudera.com/optimizing-hive-on-tez-performance/)
-- [APACHE HIVE PERFORMANCE TUNING](https://docs.cloudera.com/cdw-runtime/cloud/hive-performance-tuning/topics/hive-query-results-cache.html)
-- [	Hive 调优总结    ](https://developer.aliyun.com/article/59635)
+	- [Optimizing Hive on Tez Performance](https://blog.cloudera.com/optimizing-hive-on-tez-performance/).
+	- [APACHE HIVE PERFORMANCE TUNING](https://docs.cloudera.com/cdw-runtime/cloud/hive-performance-tuning/topics/hive-query-results-cache.html).
+	- [	Hive 调优总结    ](https://developer.aliyun.com/article/59635).
 
  
         <property>
