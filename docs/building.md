@@ -499,8 +499,10 @@ AS
 
 <details>
 <summary><strong>查询测试</strong></summary>
-	
-#### 查询3月销售额排名前10的产品
+
+<details>
+<summary><strong>查询3月销售额排名前10的产品</strong></summary>
+
 ```sql
 select 
 	year, 
@@ -519,7 +521,82 @@ limit 10;
 ```
 #### 执行计划
 ![](/src/TestPng/monthly_sales_exec_plan.png)
+#### 结果
+![](/src/TestPng/monthly_sales.png)
+</details>
 
+<details>
+<summary><strong>不同类型商店在指定月份的总销售额和平均单笔销售额</strong></summary>
+
+```sql
+select 
+	sd.type, 
+	month,
+    	sum(sf.total_amount) as total_sales,
+    	avg(sf.total_amount) as avg_sales
+from 
+	store_dim sd
+	inner join sales_fact sf
+	on sd.store_id=sf.store_id
+where year = 2023 and month in (3, 4, 5)
+group by sd.type, month
+order by sd.type, month;
+```
+
+#### 执行计划
+![](/src/TestPng/storeType_sales_exec_plan.png)
+#### 结果
+![](/src/TestPng/storeType_sales.png)
+
+</details>
+
+<details>
+<summary><strong>查询3月至5月销售额前10的产品类别和子类别</strong></summary>
+	
+```sql
+select 
+	pd.category, 
+	pd.subcategory,
+    	sum(sf.quantity) as total_quantity,
+    	sum(sf.total_amount) as total_sales
+from
+	product_dim pd
+    	inner join sales_fact sf
+    	on pd.product_id=sf.product_id
+where year = 2023 and month in (3, 4, 5)
+group by pd.category, pd.subcategory
+order by total_sales desc, total_quantity desc
+limit 10;
+```
+	
+#### 执行计划
+![](/src/TestPng/category_sales_exec_plan.png)
+#### 结果
+![](/src/TestPng/category_sales.png)
+
+</details>
+
+<details>
+<summary><strong>毛利润分析</strong></summary>
+```sql
+select
+	year,
+	month,
+	sum(total_amount) as total_sales,
+	sum(total_amount - cost*quantity) as total_profit
+from
+	sales_fact
+where year=2023 and month in (3,4,5)
+group by year,month
+order by total_profit desc;
+```
+	
+#### 执行计划
+![](/src/TestPng/profit_exec_plan.png)
+#### 结果
+![](/src/TestPng/profit.png)
+
+</details>
 
 </details>
 
