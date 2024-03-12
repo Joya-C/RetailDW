@@ -357,10 +357,6 @@ AS
 
 <details>
 <summary><strong>Hive属性调优</strong></summary>
-```xml
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-<configuration>
         <property>
                 <name>hive.execution.engine</name>
                 <value>tez</value>
@@ -390,18 +386,18 @@ AS
                 <value>false</value>
         </property>
 				
-				<property>
-								<name>hive.tez.container.size</name>
-								<value>1024</value>
-				</property>
-				<property>
-								<name>hive.tez.java.opts</name>
-								<value>-Xmx840m</value> 
-				</property>
-				<!-- or set the two above properties in beeline:
-							set hive.tez.container.size=1024; or more
-							set hive.tez.java.opts=-Xmx820m;
-				-->
+	<property>
+		<name>hive.tez.container.size</name>
+		<value>1024</value>
+	</property>
+	<property>
+		<name>hive.tez.java.opts</name>
+		<value>-Xmx840m</value> 
+	</property>
+	<!-- or set the two above properties in beeline:
+		set hive.tez.container.size=1024; or more
+		set hive.tez.java.opts=-Xmx820m;
+	-->
 				
         <property>
                 <name>hive.support.concurrency</name>
