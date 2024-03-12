@@ -498,11 +498,9 @@ AS
 
 
 <details>
-<summary><strong style="font-size:20px;">查询测试</strong></summary>
+<summary><strong>查询测试</strong></summary>
 	
-<details>
-<summary><strong>查询3月销售额排名前10的产品</strong></summary>
- 
+#### 查询3月销售额排名前10的产品
 ```sql
 select 
 	year, 
@@ -520,7 +518,8 @@ order by year, month, total_sales desc
 limit 10;
 ```
 #### 执行计划
-</details>
+![](/src/TestPng/monthly_sales_exec_plan)
+
 
 </details>
 
