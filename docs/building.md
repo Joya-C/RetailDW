@@ -369,14 +369,14 @@ AS
                 <name>hive.execution.engine</name>
                 <value>tez</value>
         </property>
-	<property>
-		<name>hive.tez.container.size</name>
-		<value>1024</value>
-	</property>
-	<property>
-		<name>hive.tez.java.opts</name>
-		<value>-Xmx840m</value> 
-	</property>
+		<property>
+			<name>hive.tez.container.size</name>
+			<value>1024</value>
+		</property>
+		<property>
+			<name>hive.tez.java.opts</name>
+			<value>-Xmx840m</value> 
+		</property>
         <property>
                 <name>datanucleus.autoStartMechanism</name>
                 <value>SchemaTable</value>
