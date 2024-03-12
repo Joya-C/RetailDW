@@ -361,6 +361,8 @@ AS
 - [Optimizing Hive on Tez Performance](https://blog.cloudera.com/optimizing-hive-on-tez-performance/)
 - [APACHE HIVE PERFORMANCE TUNING](https://docs.cloudera.com/cdw-runtime/cloud/hive-performance-tuning/topics/hive-query-results-cache.html)
 - [	Hive 调优总结    ](https://developer.aliyun.com/article/59635)
+
+ 
         <property>
                 <name>hive.execution.engine</name>
                 <value>tez</value>
