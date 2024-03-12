@@ -356,8 +356,150 @@ AS
 
 
 <details>
-<summary><strong>性能优化</strong></summary>
+<summary><strong>Hive属性调优</strong></summary>
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+        <property>
+                <name>hive.execution.engine</name>
+                <value>tez</value>
+        </property>
+        <property>
+                <name>datanucleus.autoStartMechanism</name>
+                <value>SchemaTable</value>
+        </property>
+        <property>
+                <name>javax.jdo.option.ConnectionURL</name>
+                <value>jdbc:postgresql://localhost:5432/hive?createDatabaseIfNotExist=true</value>
+        </property>
+        <property>
+                <name>javax.jdo.option.ConnectionDriverName</name>
+                <value>org.postgresql.Driver</value>
+        </property>
+        <property>
+                <name>javax.jdo.option.ConnectionUserName</name>
+                <value>postgres</value>
+        </property>
+        <property>
+                <name>javax.jdo.option.ConnectionPassword</name>
+                <value>06173152</value>
+        </property>
+        <property>
+                <name>hive.server2.enable.doAs</name>
+                <value>false</value>
+        </property>
+				
+				<property>
+								<name>hive.tez.container.size</name>
+								<value>1024</value>
+				</property>
+				<property>
+								<name>hive.tez.java.opts</name>
+								<value>-Xmx840m</value> 
+				</property>
+				<!-- or set the two above properties in beeline:
+							set hive.tez.container.size=1024; or more
+							set hive.tez.java.opts=-Xmx820m;
+				-->
+				
+        <property>
+                <name>hive.support.concurrency</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hive.exec.dynamic.partition.mode</name>
+                <value>nonstrict</value>
+        </property>
+        <property>
+                <name>hive.txn.manager</name>
+                <value>org.apache.hadoop.hive.ql.lockmgr.DbTxnManager</value>
+        </property>
+        <property>
+                <name>hive.compactor.initiator.on</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hive.compactor.worker.threads</name>
+                <value>2</value>
+        </property>
+        
+        
+        
+        <property>
+                <name>hive.server2.tez.default.queues</name>
+                <value>default</value>
+        </property>
+        <property>
+                <name>hive.server2.tez.sessions.per.default.queue</name>
+                <value>1</value>
+        </property>
+        <property>
+                <name>hive.server2.tez.initialize.default.sessions</name>
+                <value>true</value>
+        </property>
+        
+        
+        
+        
+        <property>
+                <name>hive.vectorized.execution.enabled</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hive.vectorized.execution.reduce.enabled</name>
+                <value>true</value>
+        </property>
+        
+        
+        
+        <property>
+                <name>hive.cbo.enable</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hive.compute.query.using.stats</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hive.stats.fetch.column.stats</name>
+                <value>true</value>
+        </property>
+        
+        
+        
+        
+        <property>
+                <name>hive.query.results.cache.enabled</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hive.query.results.cache.max.size</name>
+                <value>1073741824</value>   <!-- 1 GiB -->
+        </property>
 
+        <!--join optimization -->
+        <property>
+                <name>hive.auto.convert.join</name>
+                <value>true</value>
+        </property>
+
+        <property>
+                <name>hive.optimize.skewjoin</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hive.groupby.skewindata</name>
+                <value>true</value>
+        </property>
+
+        <property>
+                <name>hive.optimize.bucketmapjoin</name>
+                <value>true</value>
+        </property>
+
+</configuration>
+```
 </details>
 
 
