@@ -106,7 +106,7 @@
 
 ##### 店铺维度表（`store_dim`）
 ```sql
-CREATE TABLE IF NOT EXISTS retail.store_dim(
+CREATE TABLE IF NOT EXISTS retaildw.store_dim(
     store_id CHAR(4),
     location VARCHAR(20) NOT NULL,
     province VARCHAR(20) NOT NULL,
@@ -121,7 +121,7 @@ TBLPROPERTIES ('transactional'='true');
 
 ##### 客户维度表（`customer_dim`）
 ```sql
-CREATE TABLE IF NOT EXISTS retail.customer_dim(
+CREATE TABLE IF NOT EXISTS retaildw.customer_dim(
     customer_id CHAR(6),
     city VARCHAR(20) NOT NULL,
     province VARCHAR(20) NOT NULL,
@@ -135,7 +135,7 @@ TBLPROPERTIES ('transactional'='true');
 
 ##### 供应商维度表（`supplier_dim`）
 ```sql
-CREATE TABLE IF NOT EXISTS retail.supplier_dim(
+CREATE TABLE IF NOT EXISTS retaildw.supplier_dim(
     supplier_id VARCHAR(6),
     name STRING,
     contact_info STRING,
@@ -149,7 +149,7 @@ TBLPROPERTIES ('transactional'='true');
 
 ##### 产品维度表（`product_dim`）
 ```sql
-CREATE TABLE IF NOT EXISTS retail.product_dim(
+CREATE TABLE IF NOT EXISTS retaildw.product_dim(
     product_id CHAR(6),
     name STRING NOT NULL,
     category VARCHAR(20) NOT NULL,
@@ -168,7 +168,7 @@ TBLPROPERTIES ('transactional'='true');
 
 ##### 时间维度表（`date_dim`）
 ```sql
-CREATE TABLE IF NOT EXISTS retail.date_dim(
+CREATE TABLE IF NOT EXISTS retaildw.date_dim(
     date_key INT,
     full_date DATE,
     dayofmonth SMALLINT,
@@ -184,7 +184,7 @@ TBLPROPERTIES ('transactional'='true');
 
 ##### 销售事实表（`sales_fact`）
 ```sql
-CREATE TABLE IF NOT EXISTS retail.sales_fact(
+CREATE TABLE IF NOT EXISTS retaildw.sales_fact(
     transaction_id CHAR(7),
     store_id CHAR(4),
     product_id CHAR(6),
@@ -213,7 +213,7 @@ TBLPROPERTIES ('transactional'='true');
 
 ##### 月度销售
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retail.monthly_sales_summary
+CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.monthly_sales_summary
 AS
   SELECT
         year,
@@ -228,7 +228,7 @@ AS
 
 ##### 产品销售
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retail.product_sales_summary
+CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.product_sales_summary
 AS
   SELECT
         sf.product_id,
@@ -236,16 +236,16 @@ AS
         sum(sf.quantity) as total_quantity,
         sum(sf.total_amount) as total_sales
   FROM
-        sales_fact sf
-        inner join product_dim pd
-        on sf.product_id = pd.product_id
+        product_dim pd
+        inner join sales_fact sf
+        on pd.product_id = sf.product_id
   WHERE year = 2023 AND month in (3,4,5)
   GROUP BY sf.product_id, pd.name;
 ```
 
 ##### 店铺销售
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retail.store_sales_performance
+CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.store_sales_performance
 AS
   SELECT
         store_id,
@@ -258,7 +258,7 @@ AS
 
 ##### 地区销售
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retail.regional_sales_comparison
+CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.regional_sales_comparison
 AS
   SELECT
         sd.province,
@@ -266,9 +266,9 @@ AS
         sum(sf.total_amount) as total_sales,
         sum(sf.quantity) as total_quantity
   FROM
-        sales_fact sf
-        inner join store_dim sd
-        on sf.store_id = sd.store_id
+        store_dim sd
+        inner join sales_fact sf
+        on sd.store_id = sf.store_id
   WHERE year = 2023 AND month in (3,4,5)
   GROUP BY sd.province, sd.location;
 ```
@@ -287,7 +287,7 @@ AS
 
 ##### 产品类别利润分析
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retail.profit_analysis_by_category
+CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.profit_analysis_by_category
 AS
   SELECT
         pd.category,
@@ -295,38 +295,38 @@ AS
         sum(sf.cost) as total_cost,
         (sum(sf.total_amount) - sum(sf.cost)) / sum(sf.total_amount) * 100 as profit_margin_percentage
   FROM
-        sales_fact sf
-        inner join product_dim pd
-        on sf.product_id = pd.product_id
+        product_dim pd
+        inner join sales_fact sf
+        on pd.product_id = sf.product_id
   GROUP BY pd.category;
 ```
 ##### 产品类别销售
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retail.category_sales_dynamics
+CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.category_sales_dynamics
 AS
   SELECT
         pd.category,
         sum(sf.total_amount) as total_sales,
         sum(sf.quantity) as total_quantity
   FROM
-        sales_fact sf
-        inner join product_dim pd
-        on sf.product_id = pd.product_id
+        product_dim pd
+        inner join sales_fact sf
+        on pd.product_id = sf.product_id
   WHERE year = 2023 AND month in (3,4,5)
   GROUP BY pd.category;
 ```
 ##### 供应商绩效
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retail.supplier_performance
+CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.supplier_performance
 AS
   SELECT
         pd.supplier_id,
         sum(sf.total_amount) as total_sales,
         sum(sf.quantity) as total_quantity
   FROM
-        sales_fact sf
-        inner join product_dim pd
-        on sf.product_id = pd.product_id
+        product_dim pd
+        inner join sales_fact sf
+        on pd.product_id = sf.product_id
   WHERE year = 2023 AND month in (3,4,5)
   GROUP BY pd.supplier_id;
 ```
