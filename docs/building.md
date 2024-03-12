@@ -97,7 +97,6 @@
 
 ### 存储格式
 - 选择ORC列式存储格式，它提供了高效的压缩和性能，支持快速的数据检索和分析。
-
  
 ### 表类型——Managed 表
 - 选择由Hive来管理表的生命周期。
@@ -499,7 +498,27 @@ AS
 
 
 <details>
-<summary><strong>测试</strong></summary>
+<summary><strong>查询测试</strong></summary>
+
+### 查询3月销售额排名前10的产品
+```sql
+select 
+	year, 
+	month, 
+	pd.product_id, 
+	pd.name,
+    	sum(sf.total_amount) as total_sales
+from 
+	product_dim pd
+	inner join sales_fact sf
+	on pd.product_id=sf.product_id
+where year = 2023  and month = 3
+group by year, month, pd.product_id, pd.name
+order by year, month, total_sales desc
+limit 10;
+```
+#### 执行计划
+
 
 </details>
 
