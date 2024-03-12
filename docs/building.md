@@ -392,7 +392,8 @@ AS
         <property>
                 <name>hive.server2.enable.doAs</name>
                 <value>false</value>
-        </property>	
+        </property>
+  	<!-- 	为容器分配内存 -->
 	<property>
 		<name>hive.tez.container.size</name>
 		<value>1024</value>
