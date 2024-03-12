@@ -499,15 +499,17 @@ AS
 
 <details>
 <summary><strong>查询测试</strong></summary>
-
-### 查询3月销售额排名前10的产品
+	
+<details>
+<summary><strong>查询3月销售额排名前10的产品</strong></summary>
+ 
 ```sql
 select 
 	year, 
 	month, 
 	pd.product_id, 
 	pd.name,
-    	sum(sf.total_amount) as total_sales
+	sum(sf.total_amount) as total_sales
 from 
 	product_dim pd
 	inner join sales_fact sf
@@ -518,7 +520,7 @@ order by year, month, total_sales desc
 limit 10;
 ```
 #### 执行计划
-
+</details>
 
 </details>
 
