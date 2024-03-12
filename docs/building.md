@@ -369,6 +369,14 @@ AS
                 <name>hive.execution.engine</name>
                 <value>tez</value>
         </property>
+	<property>
+		<name>hive.tez.container.size</name>
+		<value>1024</value>
+	</property>
+	<property>
+		<name>hive.tez.java.opts</name>
+		<value>-Xmx840m</value> 
+	</property>
         <property>
                 <name>datanucleus.autoStartMechanism</name>
                 <value>SchemaTable</value>
@@ -393,16 +401,7 @@ AS
                 <name>hive.server2.enable.doAs</name>
                 <value>false</value>
         </property>
-  	<!-- 	为容器分配内存 -->
-	<property>
-		<name>hive.tez.container.size</name>
-		<value>1024</value>
-	</property>
-	<property>
-		<name>hive.tez.java.opts</name>
-		<value>-Xmx840m</value> 
-	</property>
-
+  
     	<!-- 启动并发控制和事务支持 -->
         <property>
                 <name>hive.support.concurrency</name>
