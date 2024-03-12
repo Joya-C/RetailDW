@@ -578,6 +578,7 @@ limit 10;
 
 <details>
 <summary><strong>毛利润分析</strong></summary>
+	
 ```sql
 select
 	year,
