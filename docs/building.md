@@ -356,9 +356,11 @@ AS
 
 
 <details>
-<summary><strong>Hive属性调优</strong></summary>
-
- 	
+<summary><strong>Hive相关属性调优</strong></summary>
+以下是在优化过程中参考的一些重要资源：
+- [Optimizing Hive on Tez Performance](https://blog.cloudera.com/optimizing-hive-on-tez-performance/)
+- [APACHE HIVE PERFORMANCE TUNING](https://docs.cloudera.com/cdw-runtime/cloud/hive-performance-tuning/topics/hive-query-results-cache.html)
+- [	Hive 调优总结    ](https://developer.aliyun.com/article/59635)
         <property>
                 <name>hive.execution.engine</name>
                 <value>tez</value>
@@ -396,11 +398,8 @@ AS
 		<name>hive.tez.java.opts</name>
 		<value>-Xmx840m</value> 
 	</property>
-	<!-- or set the two above properties in beeline:
-		set hive.tez.container.size=1024; or more
-		set hive.tez.java.opts=-Xmx820m;
-	-->
-				
+
+    	<!-- 启动并发控制和事务支持 -->
         <property>
                 <name>hive.support.concurrency</name>
                 <value>true</value>
@@ -423,7 +422,7 @@ AS
         </property>
         
         
-        
+        <!-- 初始化Tez会话，以减少启动延迟 -->
         <property>
                 <name>hive.server2.tez.default.queues</name>
                 <value>default</value>
@@ -438,8 +437,7 @@ AS
         </property>
         
         
-        
-        
+        <!-- 向量化查询 -->
         <property>
                 <name>hive.vectorized.execution.enabled</name>
                 <value>true</value>
@@ -449,8 +447,7 @@ AS
                 <value>true</value>
         </property>
         
-        
-        
+        <!-- 基于成本的优化 -->
         <property>
                 <name>hive.cbo.enable</name>
                 <value>true</value>
@@ -465,8 +462,7 @@ AS
         </property>
         
         
-        
-        
+        <!-- 查询结果缓存 -->
         <property>
                 <name>hive.query.results.cache.enabled</name>
                 <value>true</value>
@@ -476,12 +472,11 @@ AS
                 <value>1073741824</value>   <!-- 1 GiB -->
         </property>
 
-        <!--join optimization -->
+        <!-- 连接优化 -->
         <property>
                 <name>hive.auto.convert.join</name>
                 <value>true</value>
         </property>
-
         <property>
                 <name>hive.optimize.skewjoin</name>
                 <value>true</value>
@@ -490,14 +485,12 @@ AS
                 <name>hive.groupby.skewindata</name>
                 <value>true</value>
         </property>
-
         <property>
                 <name>hive.optimize.bucketmapjoin</name>
                 <value>true</value>
         </property>
+	</configuration>
 
-</configuration>
-```
 </details>
 
 
