@@ -392,8 +392,7 @@ AS
         <property>
                 <name>hive.server2.enable.doAs</name>
                 <value>false</value>
-        </property>
-				
+        </property>	
 	<property>
 		<name>hive.tez.container.size</name>
 		<value>1024</value>
