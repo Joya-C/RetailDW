@@ -355,10 +355,10 @@ AS
 
 
 <details>
-<summary><strong>Hive相关属性调优</strong></summary>
+<summary><strong>Hive配置</strong></summary>
 	
 ### 参考资源
-以下是在优化过程中参考的一些重要资源：
+以下是在配置过程中参考的一些重要资源：
 - [Optimizing Hive on Tez Performance](https://blog.cloudera.com/optimizing-hive-on-tez-performance/).
 - [APACHE HIVE PERFORMANCE TUNING](https://docs.cloudera.com/cdw-runtime/cloud/hive-performance-tuning/topics/hive-query-results-cache.html).
 - [	Hive 调优总结    ](https://developer.aliyun.com/article/59635).
@@ -622,7 +622,12 @@ order by total_profit desc;
 - **熟悉Hive的应用**：通过本项目，我熟悉了Hive的基本操作及常用的HiveQL语句。
 
  ### 局限性
- 
+1. **数据预处理经验不足**：由于使用的是模拟生成的数据，该数据已经相对整洁，因此项目中没有涉及到数据清洗、处理缺失值或确保数据一致性等实际操作。这意味着我在数据预处理方面的实战经验还不够丰富，未来需要在这方面加强学习和实践。
+2. **模拟数据与真实业务场景的差距**：虽然模拟数据帮助我理解和应用了数据仓库建模和查询分析的基础，但这些数据无法完全模拟真实业务环境的复杂性。在实际应用中，数据通常来自多样化的数据源，包括大量的结构化和非结构化数据，且往往涉及更复杂的数据集成和同步问题。
+3. **缺少数据治理实践**：项目中没有涉及到数据治理的过程，这是因为模拟数据的生成和使用相对简单，不需要复杂的数据治理工作。然而，数据治理是确保数据质量和支持数据驱动决策的关键环节，在未来的项目中，我需要更深入地了解和实践数据治理的方法和工具。
+4. **查询性能优化有待加强**：虽然项目中尝试了一些基本的性能优化措施，如分区、分桶以及优化连接算法，但对于查询性能的深入优化还有较大的提升空间。特别是在处理大规模数据集时，如何有效地优化查询性能，减少查询响应时间，将是我需要进一步学习的重点。
+
+
  
 </details>
 
