@@ -616,9 +616,8 @@ order by total_profit desc;
 <details>
 <summary><strong>项目总结</strong></summary>
 
- ### 实现过程和挑战
+ ### 项目收获
 
- ### 学习成果
 
  ### 局限性
  
