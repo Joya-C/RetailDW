@@ -616,8 +616,10 @@ order by total_profit desc;
 <details>
 <summary><strong>项目总结</strong></summary>
 
- ### 项目收获
-
+### 项目收获
+- **深化维度建模理解**：通过本项目，我深入学习和实践了Kimball维度建模方法，这加强了我对一些理论的理解。
+- **熟悉Linux开发环境**：在项目过程中，熟悉并掌握了一系列常用的Linux命令。
+- **熟悉Hive的应用**：通过本项目，我熟悉了Hive的基本操作及常用的HiveQL语句。
 
  ### 局限性
  
