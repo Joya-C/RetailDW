@@ -1,6 +1,4 @@
-# Virtual Mart Offline Retail Data Warehouse Project
-
-## 项目概述
+## 概述
 本项目旨在通过Hive搭建一个针对传统线下零售商店的数据仓库。
 
 ## 项目背景
