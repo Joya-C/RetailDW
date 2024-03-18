@@ -1,5 +1,3 @@
-# Virtual Mart Offline Retail Data Warehouse Project
-
 ## （以下业务场景由chatGPT模拟）
 
 ## 项目简要背景
