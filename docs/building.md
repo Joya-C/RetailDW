@@ -130,16 +130,95 @@
 ### 表类型——Managed 表
 - 选择由Hive来管理表的生命周期。
 
-### Hive表结构定义
+
+### ODS层数据
+##### 店铺数据
+```sql
+CREATE TABLE IF NOT EXISTS ods_retail.ods_store(  
+store_id CHAR(4),
+location VARCHAR(20),
+province VARCHAR(20),
+size VARCHAR(6),
+type VARCHAR(8),
+operating_hours CHAR(11),
+PRIMARY KEY (store_id) DISABLE NOVALIDATE
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+```
+
+##### 客户数据
+```sql
+CREATE TABLE IF NOT EXISTS ods_retail.ods_customer(
+customer_id CHAR(6),
+first_name VARCHAR(20),
+last_name VARCHAR(20),
+city VARCHAR(20),
+province VARCHAR(20),
+gender VARCHAR(6),
+email STRING,
+registration DATE,
+PRIMARY KEY (customer_id) DISABLE NOVALIDATE
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' ;
+```
+##### 供应商数据
+```sql
+CREATE TABLE IF NOT EXISTS ods_retail.ods_supplier(
+supplier_id VARCHAR(6),
+name STRING,
+contact_info STRING,
+product_range STRING,
+performance_metrics VARCHAR(20),
+PRIMARY KEY (supplier_id) DISABLE NOVALIDATE
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+```
+##### 产品数据
+```sql
+CREATE TABLE IF NOT EXISTS ods_retail.ods_product(
+product_id CHAR(6),
+name STRING,
+category VARCHAR(20),
+subcategory VARCHAR(20),
+supplier_id VARCHAR(6),
+cost FLOAT,
+product_specifications STRING,
+ratings FLOAT,
+reviews STRING,
+PRIMARY KEY (product_id) DISABLE NOVALIDATE,
+FOREIGN KEY (supplier_id) REFERENCES ods_retail.ods_supplier(supplier_id) DISABLE NOVALIDATE
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+```
+##### 销售数据
+```sql
+CREATE TABLE IF NOT EXISTS ods_retail.ods_sales(
+transaction_id CHAR(7),
+event_time TIMESTAMP,
+store_id CHAR(4),
+product_id CHAR(6),
+quantity SMALLINT,
+unit_price FLOAT,
+total_amount FLOAT,
+payment_method VARCHAR(15),
+customer_id CHAR(6),
+PRIMARY KEY (transaction_id) DISABLE NOVALIDATE,
+FOREIGN KEY (store_id) REFERENCES ods_retail.ods_store(store_id) DISABLE NOVALIDATE,
+FOREIGN KEY (product_id) REFERENCES ods_retail.ods_product(product_id) DISABLE NOVALIDATE,
+FOREIGN KEY (customer_id) REFERENCES ods_retail.ods_customer(customer_id) DISABLE NOVALIDATE
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+```
+### DW层数据
 
 ##### 店铺维度表（`store_dim`）
 ```sql
-CREATE TABLE IF NOT EXISTS retaildw.store_dim(
+CREATE TABLE IF NOT EXISTS dm_retail.store_dim(
     store_id CHAR(4),
-    location VARCHAR(20) NOT NULL,
-    province VARCHAR(20) NOT NULL,
-    size VARCHAR(6) CHECK (size IN ('Large', 'Medium', 'Small')),
-    type VARCHAR(8) CHECK (type IN ('Urban', 'Suburban', 'Rural')),
+    location VARCHAR(20),
+    province VARCHAR(20),
+    size VARCHAR(6),
+    type VARCHAR(8),
     operating_hours CHAR(11),
     PRIMARY KEY (store_id) DISABLE NOVALIDATE
 )
@@ -149,11 +228,11 @@ TBLPROPERTIES ('transactional'='true');
 
 ##### 客户维度表（`customer_dim`）
 ```sql
-CREATE TABLE IF NOT EXISTS retaildw.customer_dim(
+CREATE TABLE IF NOT EXISTS dm_retail.customer_dim(
     customer_id CHAR(6),
-    city VARCHAR(20) NOT NULL,
-    province VARCHAR(20) NOT NULL,
-    gender VARCHAR(6) CHECK (gender IN ('male', 'female')),
+    city VARCHAR(20),
+    province VARCHAR(20),
+    gender VARCHAR(6),
     registration DATE,
     PRIMARY KEY (customer_id) DISABLE NOVALIDATE
 )
@@ -163,7 +242,7 @@ TBLPROPERTIES ('transactional'='true');
 
 ##### 供应商维度表（`supplier_dim`）
 ```sql
-CREATE TABLE IF NOT EXISTS retaildw.supplier_dim(
+CREATE TABLE IF NOT EXISTS dm_retail.supplier_dim(
     supplier_id VARCHAR(6),
     name STRING,
     contact_info STRING,
@@ -177,11 +256,11 @@ TBLPROPERTIES ('transactional'='true');
 
 ##### 产品维度表（`product_dim`）
 ```sql
-CREATE TABLE IF NOT EXISTS retaildw.product_dim(
+CREATE TABLE IF NOT EXISTS dm_retail.product_dim(
     product_id CHAR(6),
     name STRING NOT NULL,
-    category VARCHAR(20) NOT NULL,
-    subcategory VARCHAR(20) NOT NULL,
+    category VARCHAR(20),
+    subcategory VARCHAR(20),
     supplier_id VARCHAR(6),
     product_specifications STRING,
     ratings FLOAT,
@@ -189,14 +268,14 @@ CREATE TABLE IF NOT EXISTS retaildw.product_dim(
     PRIMARY KEY (product_id) DISABLE NOVALIDATE,
     FOREIGN KEY (supplier_id) REFERENCES supplier_dim(supplier_id) DISABLE NOVALIDATE
 )
-CLUSTERED BY (product_id) INTO 3 BUCKETS 
+CLUSTERED BY (product_id) INTO 4 BUCKETS 
 STORED AS ORC
 TBLPROPERTIES ('transactional'='true');
 ```
 
 ##### 时间维度表（`date_dim`）
 ```sql
-CREATE TABLE IF NOT EXISTS retaildw.date_dim(
+CREATE TABLE IF NOT EXISTS dm_retail.date_dim(
     date_key INT,
     full_date DATE,
     dayofmonth SMALLINT,
@@ -212,13 +291,13 @@ TBLPROPERTIES ('transactional'='true');
 
 ##### 销售事实表（`sales_fact`）
 ```sql
-CREATE TABLE IF NOT EXISTS retaildw.sales_fact(
+CREATE TABLE IF NOT EXISTS dm_retail.sales_fact(
     transaction_id CHAR(7),
     store_id CHAR(4),
     product_id CHAR(6),
     customer_id CHAR(6),
     date_key INT,
-    payment_method VARCHAR(15) CHECK (payment_method IN ('Debit Card', 'Cash', 'Gift Card', 'Credit Card', 'WeChat Pay', 'Alipay')),
+    payment_method VARCHAR(15),
     quantity SMALLINT,
     cost FLOAT,
     unit_price FLOAT,
@@ -230,7 +309,7 @@ CREATE TABLE IF NOT EXISTS retaildw.sales_fact(
     FOREIGN KEY (date_key) REFERENCES date_dim(date_key) DISABLE NOVALIDATE
 )
 PARTITIONED BY (year SMALLINT,month SMALLINT)
-CLUSTERED BY (product_id) INTO 6 BUCKETS 
+CLUSTERED BY (product_id) INTO 4 BUCKETS 
 STORED AS ORC
 TBLPROPERTIES ('transactional'='true');
 ```
@@ -241,7 +320,7 @@ TBLPROPERTIES ('transactional'='true');
 
 ##### 月度销售
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.monthly_sales_summary
+CREATE MATERIALIZED VIEW IF NOT EXISTS dm_retail.monthly_sales_summary
 AS
   SELECT
         year,
@@ -256,7 +335,7 @@ AS
 
 ##### 产品销售
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.product_sales_summary
+CREATE MATERIALIZED VIEW IF NOT EXISTS dm_retail.product_sales_summary
 AS
   SELECT
         sf.product_id,
@@ -273,7 +352,7 @@ AS
 
 ##### 店铺销售
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.store_sales_performance
+CREATE MATERIALIZED VIEW IF NOT EXISTS dm_retail.store_sales_performance
 AS
   SELECT
         store_id,
@@ -286,7 +365,7 @@ AS
 
 ##### 地区销售
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.regional_sales_comparison
+CREATE MATERIALIZED VIEW IF NOT EXISTS dm_retail.regional_sales_comparison
 AS
   SELECT
         sd.province,
@@ -302,7 +381,7 @@ AS
 ```
 ##### 店铺利润分析
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retail.profit_analysis_by_store
+CREATE MATERIALIZED VIEW IF NOT EXISTS dm_retail.profit_analysis_by_store
 AS
   SELECT
         store_id,
@@ -315,7 +394,7 @@ AS
 
 ##### 产品类别利润分析
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.profit_analysis_by_category
+CREATE MATERIALIZED VIEW IF NOT EXISTS dm_retail.profit_analysis_by_category
 AS
   SELECT
         pd.category,
@@ -330,7 +409,7 @@ AS
 ```
 ##### 产品类别销售
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.category_sales_dynamics
+CREATE MATERIALIZED VIEW IF NOT EXISTS dm_retail.category_sales_dynamics
 AS
   SELECT
         pd.category,
@@ -345,7 +424,7 @@ AS
 ```
 ##### 供应商绩效
 ```sql
-CREATE MATERIALIZED VIEW IF NOT EXISTS retaildw.supplier_performance
+CREATE MATERIALIZED VIEW IF NOT EXISTS dm_retail.supplier_performance
 AS
   SELECT
         pd.supplier_id,
